@@ -15,16 +15,25 @@ function App() {
   const openai = new OpenAIApi(configuration);
 
   const generarImagen = async () => {
-    if (prompt === "") return;
-    setLoad(true);
-    const res = await openai.createImage({
-      prompt: prompt,
-      n: 1,
-      size: "512x512",
-    });
-    setResult(res.data.data[0].url);
-    document.getElementById("text").classList.remove("mb-40");
-    setLoad(false);
+    try {
+      if (prompt === "") return;
+      setLoad(true);
+      const res = await openai.createImage({
+        prompt: prompt,
+        n: 1,
+        size: "512x512",
+      });
+      setResult(res.data.data[0].url);
+      document.getElementById("text").classList.remove("mb-40");
+      setLoad(false);
+    } catch (error) {
+      if (error.response) {
+        console.log(error.response.status);
+        console.log(error.response.data);
+      } else {
+        console.log(error.message);
+      }
+    }
   };
 
   return (
@@ -38,7 +47,7 @@ function App() {
       <form action="" id="form">
         <input
           required
-          className="block mx-auto mt-1 w-80 px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-sm placeholder-slate-400
+          className="block mx-auto mt-1 w-80 px-3 py-2 bg-white border border-slate-300 rounded-md text-sm shadow-lg placeholder-slate-400
       focus:outline-none focus:border-orange-500 focus:ring-1 focus:ring-orange-500"
           type="text"
           placeholder="Ingresa tu busqueda"
